@@ -17,16 +17,19 @@ class Calculator:
 
     def apply_filters(self) -> None:
         """Applique la fonction de filtration au dataframe"""
-        self.df = self.df.map(self.filter_function)
-        if "modified_scales" in self.settings:
-            self.df = self.df.astype("Float64")
-            for element in self.settings["modified_scales"]:
-                self.modify_scale(element, self.settings["modified_scales"][element])
+        # Modificateurs de barèmes pour certaines courses
+        scales = self.settings["modified_scales"] if "modified_scales" in self.settings else {}
 
-    def modify_scale(self, race, scale):
-        """Applique une modification de barème avec un pourcentage"""
-        self.df.loc[race] = self.df.loc[race].apply(lambda x : x*scale)
-    
+        # On itère chaque ligne du dataframe 
+        for index, row in self.df.iterrows():
+            index = str(index) # Index de la ligne
+            
+            # Si la course (index de la ligne) est dans les modificateurs de barème sinon pas de modification
+            scale = scales[index] if index in scales else 1
+
+            # On applique la fonction de filtrage sur chaque cellule
+            self.df.loc[index] = row.apply(self.filter_cell, args=(scale,))
+
     def show_graph(self):
         """Affiche le graphique cumulatif"""
         self.df.cumsum().plot()
@@ -40,8 +43,8 @@ class Calculator:
         """Modifie les settings"""
         del self.settings
         self.settings = settings
-    
-    def filter_function(self, cell):
+
+    def filter_cell(self, cell, race_scale):
         """Fonction pour convertir une cellule avec les points correspondants"""
         cell = str(cell)
         cell_elements = cell.split("+") # Découpe la cellule en élements séparés par un +
@@ -56,7 +59,7 @@ class Calculator:
             if regex_match:
                 race_position = int(regex_match[1])
                 race_point = Calculator.apply_scale(race_position, self.settings["point_scale"])
-                point_result += race_point
+                point_result += race_point*race_scale
 
             # Regex pour les résultats en sprint (format S12)
             regex_match = re.match(SPRINT_REGEX, element)

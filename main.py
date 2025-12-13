@@ -26,6 +26,8 @@ def main(args: MainArgs):
 
     calculator.apply_filters()
 
+    print(calculator.get_df())
+
     print(f"Le champion est {calculator.get_df().sum().idxmax()} avec {calculator.get_df().sum().max()}")
 
     if args.output is not None:
