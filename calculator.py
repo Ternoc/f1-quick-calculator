@@ -41,8 +41,7 @@ class Calculator:
     
     def set_settings(self, settings:dict) -> None:
         """Modifie les settings"""
-        del self.settings
-        self.settings = settings
+        self.settings = self.settings | settings
 
     def filter_cell(self, cell, race_scale):
         """Fonction pour convertir une cellule avec les points correspondants"""
