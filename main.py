@@ -20,7 +20,7 @@ SPRINT_REGEX = re.compile(r"^S(\d{1,2})$")
 
 class MainArgs(typing.Protocol):
     input: str
-    output: int
+    output: str
 
 def apply_scale(race_position:int, scale:list[int]) -> int:
     """Fonction pour convertir une position en points selon le barème passé en paramètre"""
@@ -62,6 +62,8 @@ def main(args: MainArgs):
     output = input.map(filter_function)
     print(output)
     print(output.sum())
+
+    output.to_csv(args.output)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
