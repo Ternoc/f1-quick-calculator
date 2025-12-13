@@ -28,6 +28,8 @@ def main(args: MainArgs):
 
     print(calculator.get_df())
 
+    print(calculator.calculate_statistics())
+
     champion, champion_points = calculator.get_champion()
     print(f"Le champion est {champion} avec {champion_points}")
 

@@ -8,6 +8,7 @@ SPRINT_REGEX = re.compile(r"^S(\d{1,2})$")
 class Calculator:
     def __init__(self, input:pandas.DataFrame) -> None:
         """Initialise le calculateur avec le dataframe"""
+        self.input:pandas.DataFrame = input.copy()
         self.df:pandas.DataFrame = input
         self.settings:dict = {
             "point_scale":[25, 18, 15, 12, 10, 8, 6, 4, 2, 1],
@@ -73,6 +74,29 @@ class Calculator:
         
         return point_result
     
+    def calculate_statistics(self):
+        """Calcul les statistiques pour chaque pilotes"""
+        positions = list(range(1, len(self.settings["point_scale"]))) + ["FL", "DNF", "DNS", "DSQ", "DNQ", "DNPQ"] # Position sur lesquels on calcul les statistiques
+        data = {}
+
+        # On itère chaque colomne
+        for driver in self.df.columns:
+            # Initialisation du dictionnaire pour chaque pilote
+            data[driver] = {}
+            for position in positions:
+                data[driver][str(position)] = 0
+
+            # On itère chaque ligne
+            for results in self.input[driver]:
+                # On itère chaque résultat (séparés par +)
+                results = str(results).split("+")
+                for result in results:
+                    # Si un résultat correspond à une des statistiques on incrémente
+                    if result in data[driver]:
+                        data[driver][result] += 1
+
+        return pandas.DataFrame(data)
+
     def get_champion(self) -> tuple[str, float|int]:
         """Renvoie un tuple (champion, points)"""
         sum = self.df.sum()
