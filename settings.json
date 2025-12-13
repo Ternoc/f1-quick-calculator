@@ -3,5 +3,9 @@
     "sprint_point_scale":[3, 2, 1],
     "bonus":{
         "FL":[1, 10]
+    },
+    "modified_scales":
+    {
+        "Belgique":0.5
     }
 }

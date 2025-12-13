@@ -15,9 +15,17 @@ class Calculator:
             "bonus":{"FL":(1, 10)}
         }
 
-    def filter_df(self) -> None:
+    def apply_filters(self) -> None:
         """Applique la fonction de filtration au dataframe"""
         self.df = self.df.map(self.filter_function)
+        if "modified_scales" in self.settings:
+            self.df = self.df.astype("Float64")
+            for element in self.settings["modified_scales"]:
+                self.modify_scale(element, self.settings["modified_scales"][element])
+
+    def modify_scale(self, race, scale):
+        """Applique une modification de barème avec un pourcentage"""
+        self.df.loc[race] = self.df.loc[race].apply(lambda x : x*scale)
     
     def show_graph(self):
         """Affiche le graphique cumulatif"""
@@ -30,6 +38,7 @@ class Calculator:
     
     def set_settings(self, settings:dict) -> None:
         """Modifie les settings"""
+        del self.settings
         self.settings = settings
     
     def filter_function(self, cell):

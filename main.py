@@ -24,7 +24,7 @@ def main(args: MainArgs):
     if args.settings is not None:
         calculator.set_settings(load_settings_file(args.settings))
 
-    calculator.filter_df()
+    calculator.apply_filters()
 
     print(f"Le champion est {calculator.get_df().sum().idxmax()} avec {calculator.get_df().sum().max()}")
 
