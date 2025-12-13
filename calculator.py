@@ -70,7 +70,7 @@ class Calculator:
 
             # Points bonus tels que définis dans le dictionnaire
             if element in self.settings["bonus"]:
-                point_result += self.settings["bonus"][element][0] if race_position <= self.settings["bonus"][element][1] or self.settings["bonus"][element][1] == -1 else 0
+                point_result += self.settings["bonus"][element][0] if 0 < race_position <= self.settings["bonus"][element][1] or self.settings["bonus"][element][1] == -1 else 0
         
         return point_result
     
