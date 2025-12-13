@@ -28,6 +28,10 @@ class Calculator:
         """Renvoie le dataframe"""
         return self.df
     
+    def set_settings(self, settings:dict) -> None:
+        """Modifie les settings"""
+        self.settings = settings
+    
     def filter_function(self, cell):
         """Fonction pour convertir une cellule avec les points correspondants"""
         cell = str(cell)
