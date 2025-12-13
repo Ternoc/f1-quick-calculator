@@ -21,7 +21,7 @@ SPRINT_REGEX = re.compile(r"^S(\d{1,2})$")
 
 class MainArgs(typing.Protocol):
     input: str
-    output: str
+    output: str|None
     show_graph: bool
 
 def apply_scale(race_position:int, scale:list[int]) -> int:
@@ -69,7 +69,8 @@ def main(args: MainArgs):
     print(output)
     print(output.sum())
 
-    output.to_csv(args.output)
+    if args.output is not None:
+        output.to_csv(args.output)
 
     if args.show_graph:
         show_graph(output)
@@ -77,8 +78,8 @@ def main(args: MainArgs):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("-i", "--input", type=str)
-    parser.add_argument("-o", "--output", type=str)
+    parser.add_argument("-i", "--input", type=str, help="Ouvre le fichier csv fourni")
+    parser.add_argument("-o", "--output", required=False, type=str, help="Sauvegarde le résultat dans un fichier")
     parser.add_argument("-g", "--show-graph", required=False, action='store_true', help="Affiche le graphique cumulatif")
 
     args = parser.parse_args()
