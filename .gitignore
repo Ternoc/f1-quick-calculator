@@ -225,3 +225,5 @@ __marimo__/
 *.csv
 !exemple.csv
 
+*.json
+!exemple.json
