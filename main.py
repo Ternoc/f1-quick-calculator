@@ -14,13 +14,13 @@ def main(args: MainArgs):
 
     caclulator.filter_df()
 
+    print(f"Le champion est {caclulator.get_df().sum().idxmax()} avec {caclulator.get_df().sum().max()}")
+
     if args.output is not None:
         caclulator.get_df().to_csv(args.output)
 
     if args.show_graph:
         caclulator.show_graph()
-
-    print(f"Le champion est {caclulator.get_df().sum().idxmax()} avec {caclulator.get_df().sum().max()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
