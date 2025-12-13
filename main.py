@@ -28,7 +28,8 @@ def main(args: MainArgs):
 
     print(calculator.get_df())
 
-    print(f"Le champion est {calculator.get_df().sum().idxmax()} avec {calculator.get_df().sum().max()}")
+    champion, champion_points = calculator.get_champion()
+    print(f"Le champion est {champion} avec {champion_points}")
 
     if args.output is not None:
         calculator.get_df().to_csv(args.output)

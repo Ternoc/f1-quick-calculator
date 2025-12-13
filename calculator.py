@@ -74,6 +74,11 @@ class Calculator:
         
         return point_result
     
+    def get_champion(self) -> tuple[str, float|int]:
+        """Renvoie un tuple (champion, points)"""
+        sum = self.df.sum()
+        return (str(sum.idxmax()), sum.max())
+
     @staticmethod
     def apply_scale(race_position:int, scale:list[int]) -> int:
         """Fonction pour convertir une position en points selon le barème passé en paramètre"""
