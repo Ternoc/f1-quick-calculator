@@ -8,7 +8,11 @@ POINT_SCALE = [25, 18, 15, 12, 10, 8, 6, 4, 2, 1]
 SPRINT_POINT_SCALE = [3, 2, 1]
 
 # Points bonus
-BONUS = {"FL":1}
+# Format :
+# {"BONUS":(points bonus, position maximale)}
+# points bonus : Points attribués par le bonus
+# position maximale : Position au delà delaquelle le point bonus n'est pas attribué. -1 pour désactiver
+BONUS = {"FL":(1, 10)}
 
 # Patterns pour les regex
 RACE_REGEX = re.compile(r"^(\d{1,2})$")
@@ -28,24 +32,27 @@ def filter_function(cell):
     cell_elements = cell.split("+") # Découpe la cellule en élements séparés par un +
 
     point_result = 0
+    race_position = 0
+    sprint_position = 0
     
     for element in cell_elements:
         # Regex pour les résultats en course (format 11)
         regex_match = re.match(RACE_REGEX, element)
         if regex_match:
-            race_position = regex_match[1]
-            race_point = apply_scale(int(race_position), POINT_SCALE)
+            race_position = int(regex_match[1])
+            race_point = apply_scale(race_position, POINT_SCALE)
             point_result += race_point
 
         # Regex pour les résultats en sprint (format S12)
         regex_match = re.match(SPRINT_REGEX, element)
         if regex_match:
-            race_position = regex_match[1]
-            race_point = apply_scale(int(race_position), SPRINT_POINT_SCALE)
-            point_result += race_point
+            sprint_position = int(regex_match[1])
+            sprint_point = apply_scale(sprint_position, SPRINT_POINT_SCALE)
+            point_result += sprint_point
 
         # Points bonus tels que définis dans le dictionnaire
-        point_result += BONUS[element] if element in BONUS else 0
+        if element in BONUS:
+            point_result += BONUS[element][0] if race_position <= BONUS[element][1] or BONUS[element][1] == -1 else 0
     
     return point_result
 
