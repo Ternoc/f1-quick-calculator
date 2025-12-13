@@ -1,4 +1,5 @@
 import pandas
+import matplotlib.pyplot
 import argparse
 import typing
 import re
@@ -21,6 +22,7 @@ SPRINT_REGEX = re.compile(r"^S(\d{1,2})$")
 class MainArgs(typing.Protocol):
     input: str
     output: str
+    show_graph: bool
 
 def apply_scale(race_position:int, scale:list[int]) -> int:
     """Fonction pour convertir une position en points selon le barème passé en paramètre"""
@@ -56,6 +58,10 @@ def filter_function(cell):
     
     return point_result
 
+def show_graph(df:pandas.DataFrame):
+    df.cumsum().plot()
+    matplotlib.pyplot.show()
+
 def main(args: MainArgs):
     input = pandas.read_csv(args.input, index_col=0)
 
@@ -65,11 +71,15 @@ def main(args: MainArgs):
 
     output.to_csv(args.output)
 
+    if args.show_graph:
+        show_graph(output)
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     parser.add_argument("-i", "--input", type=str)
     parser.add_argument("-o", "--output", type=str)
+    parser.add_argument("-g", "--show-graph", required=False, action='store_true', help="Affiche le graphique cumulatif")
 
     args = parser.parse_args()
 
