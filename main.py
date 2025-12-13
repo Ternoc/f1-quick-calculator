@@ -26,9 +26,14 @@ def main(args: MainArgs):
 
     calculator.apply_filters()
 
+    print("Points marqués par weekend :")
     print(calculator.get_df())
 
+    print("Statistiques de la saison :")
     print(calculator.calculate_statistics())
+
+    print("Total de points :")
+    print(calculator.get_cumulative_max())
 
     champion, champion_points = calculator.get_champion()
     print(f"Le champion est {champion} avec {champion_points}")

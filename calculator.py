@@ -97,10 +97,44 @@ class Calculator:
 
         return pandas.DataFrame(data)
 
+    def get_cumulative_max(self) -> pandas.Series:
+        return self.df.sum()
+    
     def get_champion(self) -> tuple[str, float|int]:
         """Renvoie un tuple (champion, points)"""
-        sum = self.df.sum()
-        return (str(sum.idxmax()), sum.max())
+        sum = self.get_cumulative_max() # pandas series avec les points cumulés pour chaque pilote
+        max = sum.max() # Points maximums marqués
+
+        driver_at_max = [] # Pilotes qui ont marqués le maximum de points
+
+        for index, item in sum.items():
+            if item == max:
+                driver_at_max.append(index)
+
+        # S'il n'y a qu'un pilote avec le nombre max de points, il est champion
+        if len(driver_at_max) == 1:
+            return (driver_at_max[0], max)
+        
+        # Sinon on doit départager au maximum de victoire, puis de 2nde place etc...
+        drivers_stats = self.calculate_statistics()
+        
+        # On itère chaque ligne (soit la place) du df de statistiques
+        for index, row in drivers_stats.iterrows():
+            row_max = row.max() # Maximum du nombre de place
+            driver_at_row_max = [] # Pilotes qui ont le nombre max pour cette place
+
+            # On itère sur chaques pilotes que l'on départage
+            for driver in driver_at_max:
+                # Si le pilote a le nombre max de pilote on l'ajoute à la liste
+                if row[driver] == row_max:
+                    driver_at_row_max.append(driver)
+
+            # S'il n'y a qu'un pilote qui a ce nombre de place c'est bon le départage est fait
+            if len(driver_at_row_max) == 1:
+                return (driver_at_row_max[0], max)
+        
+        # Si on a pas réussi à départager
+        return("", 0)
 
     @staticmethod
     def apply_scale(race_position:int, scale:list[int]) -> int:
