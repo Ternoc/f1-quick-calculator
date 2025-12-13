@@ -11,7 +11,7 @@ class Calculator:
         self.df:pandas.DataFrame = input
         self.settings:dict = {
             "point_scale":[25, 18, 15, 12, 10, 8, 6, 4, 2, 1],
-            "sptint_point_scale":[3, 2, 1],
+            "sprint_point_scale":[3, 2, 1],
             "bonus":{"FL":(1, 10)}
         }
 
@@ -49,7 +49,7 @@ class Calculator:
             regex_match = re.match(SPRINT_REGEX, element)
             if regex_match:
                 sprint_position = int(regex_match[1])
-                sprint_point = Calculator.apply_scale(sprint_position, self.settings["sptint_point_scale"])
+                sprint_point = Calculator.apply_scale(sprint_position, self.settings["sprint_point_scale"])
                 point_result += sprint_point
 
             # Points bonus tels que définis dans le dictionnaire
