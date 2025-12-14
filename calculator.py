@@ -32,9 +32,14 @@ class Calculator:
             # On applique la fonction de filtrage sur chaque cellule
             self.driver_df.loc[index] = row.apply(self.filter_cell, args=(scale,))
 
-    def show_graph(self):
-        """Affiche le graphique cumulatif"""
+    def show_driver_graph(self):
+        """Affiche le graphique cumulatif pilote"""
         self.driver_df.cumsum().plot()
+        matplotlib.pyplot.show()
+
+    def show_constructor_graph(self):
+        """Affiche le graphique cumulatif"""
+        self.constructor_df.cumsum().plot()
         matplotlib.pyplot.show()
     
     def get_drivers_df(self) -> pandas.DataFrame:
