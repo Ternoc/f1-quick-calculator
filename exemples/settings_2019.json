@@ -1,0 +1,50 @@
+{
+    "point_scale":[25, 18, 15, 12, 10, 8, 6, 4, 2, 1],
+    "bonus":{
+        "FL":[1, 10]
+    },
+    "constructors":{
+        "Mercedes":{
+            "HAM":-1,
+            "BOT":-1
+        },
+        "Ferrari":{
+            "LEC":-1,
+            "VET":-1
+        },
+        "Redbull":{
+            "VER":-1,
+            "GAS":[[1,12]],
+            "ALB":[[13,21]]
+        },
+        "McLaren":{
+            "NOR":-1,
+            "SAI":-1
+        },
+        "Renault":{
+            "HUL":-1,
+            "RIC":-1
+        },
+        "Toro Rosso":{
+            "KVY":-1,
+            "ALB":[[1,12]],
+            "GAS":[[13,21]]
+        },
+        "Racing Point":{
+            "STR":-1,
+            "PER":-1
+        },
+        "Alfa Romeo":{
+            "RAI":-1,
+            "GIO":-1
+        },
+        "Haas":{
+            "GRO":-1,
+            "MAG":-1
+        },
+        "Williams":{
+            "KUB":-1,
+            "RUS":-1
+        }
+    }
+}
