@@ -20,7 +20,7 @@ def load_settings_file(file_name:str) -> dict:
     return settings
 
 def main(args: MainArgs):
-    calculator = Calculator(pandas.read_csv(args.input, index_col=0))
+    calculator = Calculator(pandas.read_csv(args.input, index_col=0, dtype=str))
 
     # Chargement du fichier de réglage si argument donné
     if args.settings is not None:

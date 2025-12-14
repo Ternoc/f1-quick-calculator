@@ -8,6 +8,7 @@ SPRINT_REGEX = re.compile(r"^S(\d{1,2})$")
 class Calculator:
     def __init__(self, input:pandas.DataFrame) -> None:
         """Initialise le calculateur avec le dataframe"""
+        input.fillna("0", inplace=True)
         self.input:pandas.DataFrame = input.copy()
         self.driver_df:pandas.DataFrame = input
         self.constructor_df:pandas.DataFrame = pandas.DataFrame()
@@ -185,4 +186,4 @@ class Calculator:
     @staticmethod
     def apply_scale(race_position:int, scale:list[int]) -> int:
         """Fonction pour convertir une position en points selon le barème passé en paramètre"""
-        return scale[race_position-1] if race_position <= len(scale) else 0
+        return scale[race_position-1] if 0 < race_position <= len(scale) else 0
