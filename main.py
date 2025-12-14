@@ -21,7 +21,6 @@ def load_settings_file(file_name:str) -> dict:
 
 def main(args: MainArgs):
     calculator = Calculator(pandas.read_csv(args.input, index_col=0))
-    print(args)
 
     # Chargement du fichier de réglage si argument donné
     if args.settings is not None:

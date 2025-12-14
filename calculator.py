@@ -95,8 +95,6 @@ class Calculator:
         
         # On itère chaque constructeur
         for constructor in constructors:
-            print("-------")
-            print(f"{constructor} :")
 
             local_data = pandas.Series(index=list_of_races)
             local_data.fillna(0, inplace=True)
@@ -113,11 +111,9 @@ class Calculator:
                 
                 # Si le pilote n'a pas fait toute la saison
                 else:
-                    print(f"-> {driver} :")
                     for races_interval in races:
                         race_min = races_interval[0]
                         race_max = races_interval[1]
-                        print(f"de {races_interval[0]} à {races_interval[1]}")
                         local_data = local_data.add(self.driver_df[driver][race_min-1:race_max], fill_value=0)
 
             data[constructor] = local_data
