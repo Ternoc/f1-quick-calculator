@@ -9,36 +9,41 @@ class Calculator:
     def __init__(self, input:pandas.DataFrame) -> None:
         """Initialise le calculateur avec le dataframe"""
         self.input:pandas.DataFrame = input.copy()
-        self.df:pandas.DataFrame = input
+        self.driver_df:pandas.DataFrame = input
+        self.constructor_df:pandas.DataFrame = pandas.DataFrame()
         self.settings:dict = {
             "point_scale":[25, 18, 15, 12, 10, 8, 6, 4, 2, 1],
             "sprint_point_scale":[3, 2, 1],
             "bonus":{"FL":(1, 10)}
         }
 
-    def apply_filters(self) -> None:
+    def calculate_drivers(self) -> None:
         """Applique la fonction de filtration au dataframe"""
         # Modificateurs de barèmes pour certaines courses
         scales = self.settings["modified_scales"] if "modified_scales" in self.settings else {}
 
         # On itère chaque ligne du dataframe 
-        for index, row in self.df.iterrows():
+        for index, row in self.driver_df.iterrows():
             index = str(index) # Index de la ligne
             
             # Si la course (index de la ligne) est dans les modificateurs de barème sinon pas de modification
             scale = scales[index] if index in scales else 1
 
             # On applique la fonction de filtrage sur chaque cellule
-            self.df.loc[index] = row.apply(self.filter_cell, args=(scale,))
+            self.driver_df.loc[index] = row.apply(self.filter_cell, args=(scale,))
 
     def show_graph(self):
         """Affiche le graphique cumulatif"""
-        self.df.cumsum().plot()
+        self.driver_df.cumsum().plot()
         matplotlib.pyplot.show()
     
-    def get_df(self) -> pandas.DataFrame:
-        """Renvoie le dataframe"""
-        return self.df
+    def get_drivers_df(self) -> pandas.DataFrame:
+        """Renvoie le dataframe des pilotes"""
+        return self.driver_df
+    
+    def get_constructors_df(self) -> pandas.DataFrame:
+        """Renvoie le dataframe des constructeurs"""
+        return self.constructor_df
     
     def set_settings(self, settings:dict) -> None:
         """Modifie les settings"""
@@ -74,13 +79,53 @@ class Calculator:
         
         return point_result
     
+    def calculate_constructors(self):
+        if "constructors" not in self.settings:
+            return
+        
+        data = {}
+
+        constructors = self.settings["constructors"]
+        list_of_races = self.driver_df.index.values.tolist()
+        
+        # On itère chaque constructeur
+        for constructor in constructors:
+            print("-------")
+            print(f"{constructor} :")
+
+            local_data = pandas.Series(index=list_of_races)
+            local_data.fillna(0, inplace=True)
+
+            drivers = constructors[constructor]
+            
+            # On itère chaque pilote du constructeur
+            for driver in drivers:
+                races = drivers[driver]
+
+                # Si le pilote fait toute la saison
+                if races == -1:
+                    local_data = local_data + self.driver_df[driver]
+                
+                # Si le pilote n'a pas fait toute la saison
+                else:
+                    print(f"-> {driver} :")
+                    for races_interval in races:
+                        race_min = races_interval[0]
+                        race_max = races_interval[1]
+                        print(f"de {races_interval[0]} à {races_interval[1]}")
+                        local_data = local_data.add(self.driver_df[driver][race_min-1:race_max], fill_value=0)
+
+            data[constructor] = local_data
+
+        self.constructor_df = pandas.DataFrame(data)
+                
     def calculate_statistics(self):
         """Calcul les statistiques pour chaque pilotes"""
         positions = list(range(1, len(self.settings["point_scale"]))) + ["FL", "DNF", "DNS", "DSQ", "DNQ", "DNPQ"] # Position sur lesquels on calcul les statistiques
         data = {}
 
         # On itère chaque colomne
-        for driver in self.df.columns:
+        for driver in self.driver_df.columns:
             # Initialisation du dictionnaire pour chaque pilote
             data[driver] = {}
             for position in positions:
@@ -98,7 +143,7 @@ class Calculator:
         return pandas.DataFrame(data)
 
     def get_cumulative_max(self) -> pandas.Series:
-        return self.df.sum()
+        return self.driver_df.sum()
     
     def get_champion(self) -> tuple[str, float|int]:
         """Renvoie un tuple (champion, points)"""

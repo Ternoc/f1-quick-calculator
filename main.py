@@ -10,6 +10,7 @@ class MainArgs(typing.Protocol):
     output: str|None
     settings: str|None
     show_graph: bool
+    wcc: bool
 
 def load_settings_file(file_name:str) -> dict:
     with open(file_name) as file:
@@ -24,10 +25,10 @@ def main(args: MainArgs):
     if args.settings is not None:
         calculator.set_settings(load_settings_file(args.settings))
 
-    calculator.apply_filters()
+    calculator.calculate_drivers()
 
     print("Points marqués par weekend :")
-    print(calculator.get_df())
+    print(calculator.get_drivers_df())
 
     print("Statistiques de la saison :")
     print(calculator.calculate_statistics())
@@ -38,8 +39,13 @@ def main(args: MainArgs):
     champion, champion_points = calculator.get_champion()
     print(f"Le champion est {champion} avec {champion_points}")
 
+    if args.wcc:
+        calculator.calculate_constructors()
+        print("Championnat constructeur")
+        print(calculator.get_constructors_df())
+
     if args.output is not None:
-        calculator.get_df().to_csv(args.output)
+        calculator.get_drivers_df().to_csv(args.output)
 
     if args.show_graph:
         calculator.show_graph()
@@ -51,6 +57,7 @@ if __name__ == "__main__":
     parser.add_argument("-o", "--output", required=False, type=str, help="Sauvegarde le résultat dans un fichier")
     parser.add_argument("-s", "--settings", required=False, type=str, help="Fichiers de paramètres pour la saison")
     parser.add_argument("-g", "--show-graph", required=False, action='store_true', help="Affiche le graphique cumulatif")
+    parser.add_argument("--wcc", required=False, action='store_true', help="Calcul le championnat constructeur")
 
     args = parser.parse_args()
 
