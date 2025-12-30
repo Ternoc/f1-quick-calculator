@@ -31,6 +31,9 @@ def main(args: MainArgs):
     print("Points marqués par weekend :")
     print(calculator.get_drivers_df())
 
+    print("Total cumulatif : ")
+    print(calculator.driver_df.cumsum())
+
     print("Statistiques de la saison :")
     print(calculator.calculate_statistics())
 
